@@ -9,18 +9,33 @@ import (
 	"strings"
 )
 
-// File is a storage that save/loads data to/from a file.
-type File struct {
+// FileSystem is a storage that save/loads data to/from a file.
+type FileSystem struct {
 	dir string
+
+	file string
 }
 
-// NewFile creates a new file storage.
-func NewFile(dir string) *File {
-	return &File{dir: dir}
+// NewFileSystem creates a new file storage.
+func NewFileSystem(dir, file string) *FileSystem {
+	return &FileSystem{
+		dir:  dir,
+		file: file,
+	}
 }
 
 // Load loads the data from the file.
-func (f *File) Load(_ context.Context, file string) ([]byte, error) {
+func (f *FileSystem) Load(_ context.Context) ([]byte, error) {
+	data, err := os.ReadFile(path.Join(f.dir, f.file))
+	if err != nil {
+		return nil, fmt.Errorf("opening file: %w", err)
+	}
+
+	return data, nil
+}
+
+// LoadStep loads the data from the file.
+func (f *FileSystem) LoadStep(_ context.Context, file string) ([]byte, error) {
 	filePath := filepath.Clean(path.Join(f.dir, file))
 
 	if !strings.HasPrefix(filePath, f.dir) {
@@ -35,8 +50,8 @@ func (f *File) Load(_ context.Context, file string) ([]byte, error) {
 	return data, nil
 }
 
-// Save saves the data to the file.
-func (f *File) Save(_ context.Context, file string, data []byte) error {
+// SaveStep saves the data to the file.
+func (f *FileSystem) SaveStep(_ context.Context, file string, data []byte) error {
 	filePath := filepath.Clean(path.Join(f.dir, file))
 
 	if !strings.HasPrefix(filePath, f.dir) {

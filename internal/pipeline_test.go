@@ -125,7 +125,7 @@ func TestPipeline_Run_only_extract_step(t *testing.T) {
 		return tx.Encode()
 	})
 
-	stepProvider.EXPECT().Save(mock.Anything, "extraction", saveBytes).Return(nil)
+	stepProvider.EXPECT().SaveStep(mock.Anything, "extraction", saveBytes).Return(nil)
 
 	// Mock PipelineBackend.
 	b := mocks.NewPipelineBackend(t)
@@ -172,7 +172,7 @@ func TestPipeline_Run_only_calculation_step(t *testing.T) {
 		return tx.Encode()
 	})
 
-	stepProvider.EXPECT().Load(mock.Anything, "extraction").Return(loadBytes, nil)
+	stepProvider.EXPECT().LoadStep(mock.Anything, "extraction").Return(loadBytes, nil)
 
 	saveBytes := encodeToBytes(t, [][]string{{"2024-04-15", "4974", "3", "3"}}, func(t *testing.T, record []string) []string {
 		t.Helper()
@@ -180,7 +180,7 @@ func TestPipeline_Run_only_calculation_step(t *testing.T) {
 		return record
 	})
 
-	stepProvider.EXPECT().Save(mock.Anything, "calculation", saveBytes).Return(nil)
+	stepProvider.EXPECT().SaveStep(mock.Anything, "calculation", saveBytes).Return(nil)
 
 	// Mock PipelineBackend.
 	b := mocks.NewPipelineBackend(t)
@@ -220,7 +220,7 @@ func TestPipeline_Run_only_insert_step(t *testing.T) {
 		return record
 	})
 
-	stepProvider.EXPECT().Load(mock.Anything, "calculation").Return(saveBytes, nil)
+	stepProvider.EXPECT().LoadStep(mock.Anything, "calculation").Return(saveBytes, nil)
 
 	// Mock PipelineBackend.
 	b := mocks.NewPipelineBackend(t)
@@ -290,8 +290,8 @@ func TestPipeline_Run_all_split(t *testing.T) {
 		return tx.Encode()
 	})
 
-	stepProvider.EXPECT().Save(mock.Anything, "extraction", txBytes).Return(nil)
-	stepProvider.EXPECT().Load(mock.Anything, "extraction").Return(txBytes, nil)
+	stepProvider.EXPECT().SaveStep(mock.Anything, "extraction", txBytes).Return(nil)
+	stepProvider.EXPECT().LoadStep(mock.Anything, "extraction").Return(txBytes, nil)
 
 	// Calculation step.
 	conBytes := encodeToBytes(t, [][]string{{"2024-04-15", "4974", "3", "3"}}, func(t *testing.T, record []string) []string {
@@ -300,8 +300,8 @@ func TestPipeline_Run_all_split(t *testing.T) {
 		return record
 	})
 
-	stepProvider.EXPECT().Save(mock.Anything, "calculation", conBytes).Return(nil)
-	stepProvider.EXPECT().Load(mock.Anything, "calculation").Return(conBytes, nil)
+	stepProvider.EXPECT().SaveStep(mock.Anything, "calculation", conBytes).Return(nil)
+	stepProvider.EXPECT().LoadStep(mock.Anything, "calculation").Return(conBytes, nil)
 
 	// Mock PipelineBackend.
 	b := mocks.NewPipelineBackend(t)

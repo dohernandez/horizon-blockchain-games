@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/dohernandez/horizon-blockchain-games/internal/conversor"
-	"github.com/dohernandez/horizon-blockchain-games/internal/source"
 	"github.com/dohernandez/horizon-blockchain-games/internal/storage"
 	"github.com/dohernandez/horizon-blockchain-games/internal/target"
 )
@@ -63,9 +62,9 @@ func NewBackend(cfg Config) (*Backend, error) {
 //
 // It sets the providers dependencies mainly to use files, hardcoded values, and print the output.
 func (b *Backend) prepareBackendsForTest() {
-	b.extractProvider = source.NewFile(b.cfg.Dir, b.cfg.File)
+	b.extractProvider = storage.NewFileSystem(b.cfg.Dir, b.cfg.File)
 
-	b.stepProvider = storage.NewFile(b.cfg.Dir)
+	b.stepProvider = storage.NewFileSystem(b.cfg.Dir, "")
 
 	b.conversor = conversor.NewHardcoded()
 

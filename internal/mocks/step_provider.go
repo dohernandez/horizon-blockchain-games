@@ -21,12 +21,12 @@ func (_m *StepProvider) EXPECT() *StepProvider_Expecter {
 	return &StepProvider_Expecter{mock: &_m.Mock}
 }
 
-// Load provides a mock function with given fields: ctx, step
-func (_m *StepProvider) Load(ctx context.Context, step string) ([]byte, error) {
+// LoadStep provides a mock function with given fields: ctx, step
+func (_m *StepProvider) LoadStep(ctx context.Context, step string) ([]byte, error) {
 	ret := _m.Called(ctx, step)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Load")
+		panic("no return value specified for LoadStep")
 	}
 
 	var r0 []byte
@@ -51,41 +51,41 @@ func (_m *StepProvider) Load(ctx context.Context, step string) ([]byte, error) {
 	return r0, r1
 }
 
-// StepProvider_Load_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Load'
-type StepProvider_Load_Call struct {
+// StepProvider_LoadStep_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LoadStep'
+type StepProvider_LoadStep_Call struct {
 	*mock.Call
 }
 
-// Load is a helper method to define mock.On call
+// LoadStep is a helper method to define mock.On call
 //   - ctx context.Context
 //   - step string
-func (_e *StepProvider_Expecter) Load(ctx interface{}, step interface{}) *StepProvider_Load_Call {
-	return &StepProvider_Load_Call{Call: _e.mock.On("Load", ctx, step)}
+func (_e *StepProvider_Expecter) LoadStep(ctx interface{}, step interface{}) *StepProvider_LoadStep_Call {
+	return &StepProvider_LoadStep_Call{Call: _e.mock.On("LoadStep", ctx, step)}
 }
 
-func (_c *StepProvider_Load_Call) Run(run func(ctx context.Context, step string)) *StepProvider_Load_Call {
+func (_c *StepProvider_LoadStep_Call) Run(run func(ctx context.Context, step string)) *StepProvider_LoadStep_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string))
 	})
 	return _c
 }
 
-func (_c *StepProvider_Load_Call) Return(_a0 []byte, _a1 error) *StepProvider_Load_Call {
+func (_c *StepProvider_LoadStep_Call) Return(_a0 []byte, _a1 error) *StepProvider_LoadStep_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
-func (_c *StepProvider_Load_Call) RunAndReturn(run func(context.Context, string) ([]byte, error)) *StepProvider_Load_Call {
+func (_c *StepProvider_LoadStep_Call) RunAndReturn(run func(context.Context, string) ([]byte, error)) *StepProvider_LoadStep_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
-// Save provides a mock function with given fields: ctx, step, data
-func (_m *StepProvider) Save(ctx context.Context, step string, data []byte) error {
+// SaveStep provides a mock function with given fields: ctx, step, data
+func (_m *StepProvider) SaveStep(ctx context.Context, step string, data []byte) error {
 	ret := _m.Called(ctx, step, data)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Save")
+		panic("no return value specified for SaveStep")
 	}
 
 	var r0 error
@@ -98,32 +98,32 @@ func (_m *StepProvider) Save(ctx context.Context, step string, data []byte) erro
 	return r0
 }
 
-// StepProvider_Save_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Save'
-type StepProvider_Save_Call struct {
+// StepProvider_SaveStep_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SaveStep'
+type StepProvider_SaveStep_Call struct {
 	*mock.Call
 }
 
-// Save is a helper method to define mock.On call
+// SaveStep is a helper method to define mock.On call
 //   - ctx context.Context
 //   - step string
 //   - data []byte
-func (_e *StepProvider_Expecter) Save(ctx interface{}, step interface{}, data interface{}) *StepProvider_Save_Call {
-	return &StepProvider_Save_Call{Call: _e.mock.On("Save", ctx, step, data)}
+func (_e *StepProvider_Expecter) SaveStep(ctx interface{}, step interface{}, data interface{}) *StepProvider_SaveStep_Call {
+	return &StepProvider_SaveStep_Call{Call: _e.mock.On("SaveStep", ctx, step, data)}
 }
 
-func (_c *StepProvider_Save_Call) Run(run func(ctx context.Context, step string, data []byte)) *StepProvider_Save_Call {
+func (_c *StepProvider_SaveStep_Call) Run(run func(ctx context.Context, step string, data []byte)) *StepProvider_SaveStep_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(string), args[2].([]byte))
 	})
 	return _c
 }
 
-func (_c *StepProvider_Save_Call) Return(_a0 error) *StepProvider_Save_Call {
+func (_c *StepProvider_SaveStep_Call) Return(_a0 error) *StepProvider_SaveStep_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *StepProvider_Save_Call) RunAndReturn(run func(context.Context, string, []byte) error) *StepProvider_Save_Call {
+func (_c *StepProvider_SaveStep_Call) RunAndReturn(run func(context.Context, string, []byte) error) *StepProvider_SaveStep_Call {
 	_c.Call.Return(run)
 	return _c
 }

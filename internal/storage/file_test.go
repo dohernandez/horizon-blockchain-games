@@ -15,21 +15,32 @@ func TestFile_Load(t *testing.T) {
 
 	ctx := context.Background()
 
-	data, err := storage.NewFile("testdata").Load(ctx, "extraction.csv")
+	data, err := storage.NewFileSystem("../../resources", "sample_data.csv").Load(ctx)
 	require.NoError(t, err)
 
 	require.NotNil(t, data)
 }
 
-func TestFile_Save(t *testing.T) {
+func TestFile_LoadStep(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+
+	data, err := storage.NewFileSystem("testdata", "").LoadStep(ctx, "extraction.csv")
+	require.NoError(t, err)
+
+	require.NotNil(t, data)
+}
+
+func TestFile_SaveStep(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()
 
 	data := []byte("sample data")
 
-	f := storage.NewFile("testdata")
-	err := f.Save(ctx, "calculation.csv", data)
+	f := storage.NewFileSystem("testdata", "")
+	err := f.SaveStep(ctx, "calculation.csv", data)
 	require.NoError(t, err)
 
 	t.Cleanup(func() {

@@ -35,8 +35,8 @@ const (
 
 // StepProvider is the interface that provides the ability to load and save the step data.
 type StepProvider interface {
-	Load(ctx context.Context, step string) ([]byte, error)
-	Save(ctx context.Context, step string, data []byte) error
+	LoadStep(ctx context.Context, step string) ([]byte, error)
+	SaveStep(ctx context.Context, step string, data []byte) error
 }
 
 //go:generate mockery --name=PipelineBackend --outpkg=mocks --output=mocks --filename=pipeline_backend.go --with-expecter
@@ -199,7 +199,7 @@ func (p *Pipeline) saveStepData(ctx context.Context, g *errgroup.Group, step Ste
 			return err
 		}
 
-		return p.b.StepProvider().Save(ctx, step.String(), buf.Bytes())
+		return p.b.StepProvider().SaveStep(ctx, step.String(), buf.Bytes())
 	})
 }
 
@@ -343,7 +343,7 @@ func (p *Pipeline) loadDataStep(ctx context.Context, g *errgroup.Group, step Ste
 	g.Go(func() error {
 		defer close(data)
 
-		dataLoaded, err := p.b.StepProvider().Load(ctx, step.String())
+		dataLoaded, err := p.b.StepProvider().LoadStep(ctx, step.String())
 		if err != nil {
 			return err
 		}
