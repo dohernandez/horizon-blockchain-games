@@ -7,7 +7,10 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
+
+	"github.com/bool64/ctxd"
 )
 
 const (
@@ -37,13 +40,6 @@ type CoinGeckoConfig struct {
 	TTL     time.Duration
 }
 
-// CoinGecko is a client for the CoinGecko API.
-type CoinGecko struct {
-	cfg CoinGeckoConfig
-
-	transport http.RoundTripper
-}
-
 // Option is a convenience type which will be used to modify Client private fields.
 type Option func(client *CoinGecko)
 
@@ -58,11 +54,36 @@ func WithTransport(transport http.RoundTripper) Option {
 	}
 }
 
+// WithLogger configures the logger of a Client.
+func WithLogger(logger ctxd.Logger) Option {
+	return func(c *CoinGecko) {
+		if logger == nil {
+			return
+		}
+
+		c.logger = logger
+	}
+}
+
+// CoinGecko is a client for the CoinGecko API.
+type CoinGecko struct {
+	cfg CoinGeckoConfig
+
+	transport http.RoundTripper
+
+	mapRates map[string]float64
+	sm       sync.RWMutex
+
+	logger ctxd.Logger
+}
+
 // NewCoinGecko creates a new CoinGecko client with the given configuration.
 func NewCoinGecko(cfg CoinGeckoConfig, opts ...Option) *CoinGecko {
 	c := &CoinGecko{
 		cfg:       cfg,
 		transport: http.DefaultTransport,
+		mapRates:  make(map[string]float64),
+		logger:    ctxd.NoOpLogger{},
 	}
 
 	for _, opt := range opts {
@@ -75,6 +96,16 @@ func NewCoinGecko(cfg CoinGeckoConfig, opts ...Option) *CoinGecko {
 // ConvertUSD converts the given value in USD to the given currency.
 func (c *CoinGecko) ConvertUSD(ctx context.Context, valueDecimal float64, symbol string) (float64, error) {
 	symbol = strings.ToLower(symbol)
+
+	c.sm.RLock()
+	if price, ok := c.mapRates[symbol]; ok {
+		c.sm.RUnlock()
+
+		return valueDecimal * price, nil
+	}
+	c.sm.RUnlock()
+
+	ctx = ctxd.AddFields(ctx, "symbol", symbol)
 
 	id, ok := symbolToID[symbol]
 	if !ok {
@@ -89,6 +120,8 @@ func (c *CoinGecko) ConvertUSD(ctx context.Context, valueDecimal float64, symbol
 	)
 
 	if c.cfg.TTL > 0 {
+		c.logger.Debug(ctx, "setting timeout to request", "timeout", c.cfg.TTL)
+
 		ctxc, cancel = context.WithTimeout(ctx, c.cfg.TTL)
 	}
 
@@ -100,7 +133,12 @@ func (c *CoinGecko) ConvertUSD(ctx context.Context, valueDecimal float64, symbol
 	}
 
 	req.Header.Add("Accept", "application/json")
+
+	c.logger.Debug(ctx, "setting api key header", "api_key_type", c.cfg.KeyType)
+
 	req.Header.Add(c.cfg.KeyType, c.cfg.Key)
+
+	c.logger.Debug(ctx, "requesting price", "url", url)
 
 	res, err := c.transport.RoundTrip(req)
 	if err != nil {
@@ -108,6 +146,8 @@ func (c *CoinGecko) ConvertUSD(ctx context.Context, valueDecimal float64, symbol
 	}
 
 	defer res.Body.Close() //nolint:errcheck
+
+	c.logger.Debug(ctx, "reading response body")
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
@@ -118,6 +158,8 @@ func (c *CoinGecko) ConvertUSD(ctx context.Context, valueDecimal float64, symbol
 		return 0, fmt.Errorf("unexpected status code: %d, body: %s", res.StatusCode, string(body))
 	}
 
+	c.logger.Debug(ctx, "unmarshaling response body")
+
 	var priceJSON map[string]map[string]float64
 
 	err = json.Unmarshal(body, &priceJSON)
@@ -125,10 +167,18 @@ func (c *CoinGecko) ConvertUSD(ctx context.Context, valueDecimal float64, symbol
 		return 0, fmt.Errorf("unmarshaling body: %w", err)
 	}
 
-	price, ok := priceJSON[id]
+	priceObj, ok := priceJSON[id]
 	if !ok {
 		return 0, fmt.Errorf("currency not found: %s", symbol)
 	}
 
-	return valueDecimal * price["usd"], nil
+	price := priceObj["usd"]
+
+	c.sm.Lock()
+	c.mapRates[symbol] = price
+	c.sm.Unlock()
+
+	c.logger.Debug(ctx, "got price", "price", price)
+
+	return valueDecimal * price, nil
 }

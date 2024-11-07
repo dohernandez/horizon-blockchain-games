@@ -1,7 +1,11 @@
 package internal
 
 import (
+	"context"
 	"errors"
+	"github.com/bool64/ctxd"
+	"github.com/bool64/zapctxd"
+	"go.uber.org/zap/zapcore"
 
 	"github.com/dohernandez/horizon-blockchain-games/internal/conversor"
 	"github.com/dohernandez/horizon-blockchain-games/internal/storage"
@@ -10,12 +14,28 @@ import (
 
 // Config holds the configuration for the backend to create the providers dependencies.
 type Config struct {
-	Dir    string
-	File   string
+	// Environment is the environment to run the application.
+	Environment string
+
+	// Dir is the directory (filesystem) or bucket to store the data.
+	Dir string
+	// File is the file to load the data.
+	File string
+	// IsTest is to run the application in test mode.
+	// When the application is in test mode, all dependencies are filesystem.
 	IsTest bool
 
+	// Conversor is the type of conversor to use.
 	Conversor string
+
+	// CoinGecko holds the configuration for the CoinGecko conversor.
 	CoinGecko conversor.CoinGeckoConfig
+
+	// StorageType is the type of storage to use.
+	StorageType string
+
+	// Logger is to enable logger.
+	Logger bool
 }
 
 // Backend is the main struct that holds the providers dependencies.
@@ -30,19 +50,57 @@ type Backend struct {
 
 // NewBackend creates a new backend with the given configuration.
 func NewBackend(cfg Config) (*Backend, error) {
+	ctx := context.Background()
+
 	b := Backend{
 		cfg: cfg,
 	}
 
-	b.prepareBackendsForTest()
+	var logger ctxd.Logger
+
+	logger = ctxd.NoOpLogger{}
+
+	if cfg.Logger {
+		logger = zapctxd.New(zapctxd.Config{
+			Level:   zapcore.DebugLevel,
+			DevMode: false,
+		})
+	}
+
+	st := storage.NewFileSystem(b.cfg.Dir, b.cfg.File)
+
+	logger.Debug(ctx, "initializing extractProvider with filesystem storage")
+
+	b.extractProvider = st
+
+	logger.Debug(ctx, "initializing stepProvider with filesystem storage")
+
+	b.stepProvider = st
+
+	logger.Debug(ctx, "initializing conversor with hardcoded values")
+
+	b.conversor = conversor.NewHardcoded()
+
+	logger.Debug(ctx, "initializing loadProvider with print target")
+
+	b.loadProvider = &target.Print{}
 
 	if cfg.IsTest {
 		return &b, nil
 	}
 
-	// Conversor
+	// Storage
+	if cfg.StorageType == "bucket" {
+		logger.Debug(ctx, "replacing extractProvider with google bucket storage")
+
+		b.extractProvider = storage.NewGoogleBucket(cfg.Dir, cfg.File)
+	}
+
+	// Conversor.
 	if cfg.Conversor == "coingecko" {
-		if cfg.CoinGecko.Key != "" {
+		logger.Debug(ctx, "replacing conversor with CoinGecko")
+
+		if cfg.CoinGecko.Key == "" {
 			return nil, errors.New("coingecko api key is required")
 		}
 
@@ -52,23 +110,12 @@ func NewBackend(cfg Config) (*Backend, error) {
 			cfg.CoinGecko.URL = conversor.ProBaseURL
 		}
 
-		b.conversor = conversor.NewCoinGecko(cfg.CoinGecko)
+		logger.Debug(ctx, "CoinGecko conversor configuration", "config", cfg.CoinGecko)
+
+		b.conversor = conversor.NewCoinGecko(cfg.CoinGecko, conversor.WithLogger(logger))
 	}
 
 	return &b, nil
-}
-
-// prepareBackendsForTest prepares the backend for testing purposes.
-//
-// It sets the providers dependencies mainly to use files, hardcoded values, and print the output.
-func (b *Backend) prepareBackendsForTest() {
-	b.extractProvider = storage.NewFileSystem(b.cfg.Dir, b.cfg.File)
-
-	b.stepProvider = storage.NewFileSystem(b.cfg.Dir, "")
-
-	b.conversor = conversor.NewHardcoded()
-
-	b.loadProvider = &target.Print{}
 }
 
 // ExtractProvider returns the extract provider.

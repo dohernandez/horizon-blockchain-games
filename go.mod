@@ -4,7 +4,9 @@ go 1.23.3
 
 require (
 	cloud.google.com/go/storage v1.46.0
+	github.com/bool64/ctxd v1.2.1
 	github.com/bool64/httpmock v0.1.15
+	github.com/bool64/zapctxd v1.2.0
 	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.5
 	golang.org/x/sync v0.8.0
@@ -58,6 +60,8 @@ require (
 	go.opentelemetry.io/otel/sdk v1.29.0 // indirect
 	go.opentelemetry.io/otel/sdk/metric v1.29.0 // indirect
 	go.opentelemetry.io/otel/trace v1.29.0 // indirect
+	go.uber.org/multierr v1.11.0 // indirect
+	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/crypto v0.28.0 // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/oauth2 v0.23.0 // indirect
