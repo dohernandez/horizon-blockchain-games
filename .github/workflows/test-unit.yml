@@ -70,13 +70,15 @@ jobs:
           git fetch origin main ${{ github.event.pull_request.base.sha }}
           HEAD=$(git rev-parse HEAD)
           git reset --hard ${{ github.event.pull_request.base.sha }}
-          (make test-unit && go tool cover -func=./unit.coverprofile > unit-base.txt) || echo "No test-unit in base"
+          (make test-unit && grep -v "/mocks/" ./unit.coverprofile > ./unit.coverprofile.sanitize && mv ./unit.coverprofile.sanitize ./unit.coverprofile && go tool cover -func=./unit.coverprofile > unit-base.txt) || echo "No test-unit in base"
           git reset --hard $HEAD
 
       - name: Test
         id: test
         run: |
           make test-unit
+          grep -v "/mocks/" ./unit.coverprofile > ./unit.coverprofile.sanitize
+          mv ./unit.coverprofile.sanitize ./unit.coverprofile
           go tool cover -func=./unit.coverprofile > unit.txt
           TOTAL=$(grep 'total:' unit.txt)
           echo "${TOTAL}"
