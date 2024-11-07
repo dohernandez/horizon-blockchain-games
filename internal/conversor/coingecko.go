@@ -13,6 +13,9 @@ import (
 	"github.com/bool64/ctxd"
 )
 
+// GoinGeckoType is the type of the CoinGecko conversor.
+const GoinGeckoType = "coingecko"
+
 const (
 	// DemoKeyType is the key type for the CoinGecko demo API key.
 	DemoKeyType = "x_cg_demo_api_key"

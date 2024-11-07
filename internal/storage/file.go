@@ -9,6 +9,9 @@ import (
 	"strings"
 )
 
+// FileSystemType is the type of the FileSystem storage.
+const FileSystemType = "file"
+
 // FileSystem is a storage that save/loads data to/from a file.
 type FileSystem struct {
 	dir string

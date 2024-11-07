@@ -9,6 +9,9 @@ import (
 	"cloud.google.com/go/storage"
 )
 
+// BucketType is the type of the GoogleBucket storage.
+const BucketType = "bucket"
+
 // GoogleBucket is a storage that save/loads data to/from a Google Cloud Storage bucket.
 type GoogleBucket struct {
 	// bucket is the name of the bucket.
@@ -35,17 +38,17 @@ func (g *GoogleBucket) Load(ctx context.Context) ([]byte, error) {
 	var err error
 
 	g.once.Do(func() {
-		var storageClient *storage.Client
-
-		storageClient, err = storage.NewClient(ctx)
+		g.client, err = storage.NewClient(ctx)
 		if err != nil {
 			err = fmt.Errorf("creating Google Cloud Storage client: %w", err)
 
 			return
 		}
-
-		g.client = storageClient
 	})
+
+	if err != nil {
+		return nil, err
+	}
 
 	client, err := storage.NewClient(ctx)
 	if err != nil {

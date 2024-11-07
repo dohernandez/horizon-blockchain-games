@@ -27,6 +27,7 @@ linters-settings:
     check-exported: true
   funlen:
     lines: 100
+    statements: 60
 
 linters:
   enable-all: true

@@ -6,6 +6,9 @@ import (
 	"strings"
 )
 
+// HardcodedType is the type of the Hardcoded conversor.
+const HardcodedType = "hardcoded"
+
 // Hardcoded is a hardcoded implementation of the conversor.
 //
 // It contains a map of exchange rates for some currencies.

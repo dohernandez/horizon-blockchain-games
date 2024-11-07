@@ -7,6 +7,9 @@ import (
 	"github.com/dohernandez/horizon-blockchain-games/internal/entities"
 )
 
+// PrintType is the type of the Print warehouse.
+const PrintType = "print"
+
 // Print is a target to print the flatten entity.
 type Print struct{}
 

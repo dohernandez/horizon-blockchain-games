@@ -6,7 +6,7 @@ import (
 	"github.com/dohernandez/horizon-blockchain-games/internal/entities"
 )
 
-//go:generate mockery --name=LoadProvider --outpkg=mocks --output=mocks --filename=load_provider.go --with-expecter
+//go:generate mockery --name=WarehouseProvider --outpkg=mocks --output=mocks --filename=warehouse_provider.go --with-expecter
 
 // WarehouseProvider is the interface that provides the ability to save the flatten entity.
 type WarehouseProvider interface {

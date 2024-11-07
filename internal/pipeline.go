@@ -45,7 +45,7 @@ type StepProvider interface {
 type PipelineBackend interface {
 	ExtractProvider() ExtractProvider
 	Conversor() Conversor
-	LoadProvider() WarehouseProvider
+	WarehouseProvider() WarehouseProvider
 
 	StepProvider() StepProvider
 }
@@ -414,7 +414,7 @@ func (p *Pipeline) runInsertion(ctx context.Context, g *errgroup.Group, flattens
 					return nil
 				}
 
-				err := Insert(ctx, p.b.LoadProvider(), f)
+				err := Insert(ctx, p.b.WarehouseProvider(), f)
 				if err != nil {
 					return err
 				}

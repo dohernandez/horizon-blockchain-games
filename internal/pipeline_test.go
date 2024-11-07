@@ -48,7 +48,7 @@ func TestPipeline_Run_all_in_one(t *testing.T) {
 	}
 
 	// Mock WarehouseProvider.
-	storage := mocks.NewLoadProvider(t)
+	storage := mocks.NewWarehouseProvider(t)
 	storage.EXPECT().Save(mock.Anything, entities.Flatten{
 		Date:        "2024-04-15",
 		ProjectID:   "4974",
@@ -60,7 +60,7 @@ func TestPipeline_Run_all_in_one(t *testing.T) {
 	b := mocks.NewPipelineBackend(t)
 	b.EXPECT().ExtractProvider().Return(provider)
 	b.EXPECT().Conversor().Return(conversor)
-	b.EXPECT().LoadProvider().Return(storage)
+	b.EXPECT().WarehouseProvider().Return(storage)
 
 	// Run the pipeline.
 	pipeline := internal.NewPipeline(b, internal.PipelineConfig{
@@ -203,7 +203,7 @@ func TestPipeline_Run_only_insert_step(t *testing.T) {
 	ctx := context.Background()
 
 	// Mock WarehouseProvider.
-	storage := mocks.NewLoadProvider(t)
+	storage := mocks.NewWarehouseProvider(t)
 	storage.EXPECT().Save(mock.Anything, entities.Flatten{
 		Date:        "2024-04-15",
 		ProjectID:   "4974",
@@ -224,7 +224,7 @@ func TestPipeline_Run_only_insert_step(t *testing.T) {
 
 	// Mock PipelineBackend.
 	b := mocks.NewPipelineBackend(t)
-	b.EXPECT().LoadProvider().Return(storage)
+	b.EXPECT().WarehouseProvider().Return(storage)
 	b.EXPECT().StepProvider().Return(stepProvider)
 
 	// Run the pipeline.
@@ -269,7 +269,7 @@ func TestPipeline_Run_all_split(t *testing.T) {
 	}
 
 	// Mock WarehouseProvider.
-	storage := mocks.NewLoadProvider(t)
+	storage := mocks.NewWarehouseProvider(t)
 	storage.EXPECT().Save(mock.Anything, entities.Flatten{
 		Date:        "2024-04-15",
 		ProjectID:   "4974",
@@ -307,7 +307,7 @@ func TestPipeline_Run_all_split(t *testing.T) {
 	b := mocks.NewPipelineBackend(t)
 	b.EXPECT().ExtractProvider().Return(provider)
 	b.EXPECT().Conversor().Return(conversor)
-	b.EXPECT().LoadProvider().Return(storage)
+	b.EXPECT().WarehouseProvider().Return(storage)
 	b.EXPECT().StepProvider().Return(stepProvider)
 
 	// Run the pipeline.

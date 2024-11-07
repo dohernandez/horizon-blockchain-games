@@ -32,7 +32,7 @@ func TestInsert(t *testing.T) {
 		},
 	}
 
-	storage := mocks.NewLoadProvider(t)
+	storage := mocks.NewWarehouseProvider(t)
 
 	for _, f := range flattens {
 		storage.EXPECT().Save(mock.Anything, f).Return(nil)

@@ -1,2 +1,2 @@
-// Package target provides the target providers implementation for the application.
+// Package warehouse provides the warehouse providers implementation for the application.
 package warehouse

@@ -25,14 +25,17 @@ type Config struct {
 	// When the application is in test mode, all dependencies are filesystem.
 	IsTest bool
 
-	// Conversor is the type of conversor to use.
-	Conversor string
+	// ConversorType is the type of conversor to use.
+	ConversorType string
 
 	// CoinGecko holds the configuration for the CoinGecko conversor.
 	CoinGecko conversor.CoinGeckoConfig
 
 	// StorageType is the type of storage to use.
 	StorageType string
+
+	// WarehouseType is the type of warehouse to use.
+	WarehouseType string
 
 	// Logger is to enable logger.
 	Logger bool
@@ -97,7 +100,7 @@ func NewBackend(cfg Config) (*Backend, error) {
 	}
 
 	// Conversor.
-	if cfg.Conversor == "coingecko" {
+	if cfg.ConversorType == "coingecko" {
 		logger.Debug(ctx, "replacing conversor with CoinGecko")
 
 		if cfg.CoinGecko.Key == "" {
@@ -129,7 +132,7 @@ func (b *Backend) Conversor() Conversor {
 }
 
 // WarehouseProvider returns the load provider.
-func (b *Backend) LoadProvider() WarehouseProvider {
+func (b *Backend) WarehouseProvider() WarehouseProvider {
 	return b.loadProvider
 }
 
