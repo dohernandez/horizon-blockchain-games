@@ -47,7 +47,7 @@ func TestPipeline_Run_all_in_one(t *testing.T) {
 		conversor.EXPECT().ConvertUSD(mock.Anything, transaction.CurrencyValueDecimal, transaction.CurrencySymbol).Return(1.0, nil)
 	}
 
-	// Mock LoadProvider.
+	// Mock WarehouseProvider.
 	storage := mocks.NewLoadProvider(t)
 	storage.EXPECT().Save(mock.Anything, entities.Flatten{
 		Date:        "2024-04-15",
@@ -202,7 +202,7 @@ func TestPipeline_Run_only_insert_step(t *testing.T) {
 
 	ctx := context.Background()
 
-	// Mock LoadProvider.
+	// Mock WarehouseProvider.
 	storage := mocks.NewLoadProvider(t)
 	storage.EXPECT().Save(mock.Anything, entities.Flatten{
 		Date:        "2024-04-15",
@@ -268,7 +268,7 @@ func TestPipeline_Run_all_split(t *testing.T) {
 		conversor.EXPECT().ConvertUSD(mock.Anything, transaction.CurrencyValueDecimal, transaction.CurrencySymbol).Return(1.0, nil)
 	}
 
-	// Mock LoadProvider.
+	// Mock WarehouseProvider.
 	storage := mocks.NewLoadProvider(t)
 	storage.EXPECT().Save(mock.Anything, entities.Flatten{
 		Date:        "2024-04-15",

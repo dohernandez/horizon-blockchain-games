@@ -12,7 +12,7 @@ import (
 	"github.com/dohernandez/horizon-blockchain-games/internal/mocks"
 )
 
-func TestLoad(t *testing.T) {
+func TestInsert(t *testing.T) {
 	t.Parallel()
 
 	ctx := context.Background()

@@ -45,7 +45,7 @@ type StepProvider interface {
 type PipelineBackend interface {
 	ExtractProvider() ExtractProvider
 	Conversor() Conversor
-	LoadProvider() LoadProvider
+	LoadProvider() WarehouseProvider
 
 	StepProvider() StepProvider
 }

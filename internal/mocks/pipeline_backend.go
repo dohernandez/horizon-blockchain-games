@@ -115,33 +115,33 @@ func (_c *PipelineBackend_ExtractProvider_Call) RunAndReturn(run func() internal
 }
 
 // LoadProvider provides a mock function with given fields:
-func (_m *PipelineBackend) LoadProvider() internal.LoadProvider {
+func (_m *PipelineBackend) LoadProvider() internal.WarehouseProvider {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
-		panic("no return value specified for LoadProvider")
+		panic("no return value specified for WarehouseProvider")
 	}
 
-	var r0 internal.LoadProvider
-	if rf, ok := ret.Get(0).(func() internal.LoadProvider); ok {
+	var r0 internal.WarehouseProvider
+	if rf, ok := ret.Get(0).(func() internal.WarehouseProvider); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(internal.LoadProvider)
+			r0 = ret.Get(0).(internal.WarehouseProvider)
 		}
 	}
 
 	return r0
 }
 
-// PipelineBackend_LoadProvider_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'LoadProvider'
+// PipelineBackend_LoadProvider_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'WarehouseProvider'
 type PipelineBackend_LoadProvider_Call struct {
 	*mock.Call
 }
 
 // LoadProvider is a helper method to define mock.On call
 func (_e *PipelineBackend_Expecter) LoadProvider() *PipelineBackend_LoadProvider_Call {
-	return &PipelineBackend_LoadProvider_Call{Call: _e.mock.On("LoadProvider")}
+	return &PipelineBackend_LoadProvider_Call{Call: _e.mock.On("WarehouseProvider")}
 }
 
 func (_c *PipelineBackend_LoadProvider_Call) Run(run func()) *PipelineBackend_LoadProvider_Call {
@@ -151,12 +151,12 @@ func (_c *PipelineBackend_LoadProvider_Call) Run(run func()) *PipelineBackend_Lo
 	return _c
 }
 
-func (_c *PipelineBackend_LoadProvider_Call) Return(_a0 internal.LoadProvider) *PipelineBackend_LoadProvider_Call {
+func (_c *PipelineBackend_LoadProvider_Call) Return(_a0 internal.WarehouseProvider) *PipelineBackend_LoadProvider_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
 
-func (_c *PipelineBackend_LoadProvider_Call) RunAndReturn(run func() internal.LoadProvider) *PipelineBackend_LoadProvider_Call {
+func (_c *PipelineBackend_LoadProvider_Call) RunAndReturn(run func() internal.WarehouseProvider) *PipelineBackend_LoadProvider_Call {
 	_c.Call.Return(run)
 	return _c
 }

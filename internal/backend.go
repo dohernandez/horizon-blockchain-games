@@ -9,7 +9,7 @@ import (
 
 	"github.com/dohernandez/horizon-blockchain-games/internal/conversor"
 	"github.com/dohernandez/horizon-blockchain-games/internal/storage"
-	"github.com/dohernandez/horizon-blockchain-games/internal/target"
+	"github.com/dohernandez/horizon-blockchain-games/internal/warehouse"
 )
 
 // Config holds the configuration for the backend to create the providers dependencies.
@@ -44,7 +44,7 @@ type Backend struct {
 
 	extractProvider ExtractProvider
 	conversor       Conversor
-	loadProvider    LoadProvider
+	loadProvider    WarehouseProvider
 	stepProvider    StepProvider
 }
 
@@ -83,7 +83,7 @@ func NewBackend(cfg Config) (*Backend, error) {
 
 	logger.Debug(ctx, "initializing loadProvider with print target")
 
-	b.loadProvider = &target.Print{}
+	b.loadProvider = &warehouse.Print{}
 
 	if cfg.IsTest {
 		return &b, nil
@@ -128,8 +128,8 @@ func (b *Backend) Conversor() Conversor {
 	return b.conversor
 }
 
-// LoadProvider returns the load provider.
-func (b *Backend) LoadProvider() LoadProvider {
+// WarehouseProvider returns the load provider.
+func (b *Backend) LoadProvider() WarehouseProvider {
 	return b.loadProvider
 }
 
