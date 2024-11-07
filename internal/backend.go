@@ -1,6 +1,8 @@
 package internal
 
 import (
+	"errors"
+
 	"github.com/dohernandez/horizon-blockchain-games/internal/conversor"
 	"github.com/dohernandez/horizon-blockchain-games/internal/source"
 	"github.com/dohernandez/horizon-blockchain-games/internal/storage"
@@ -12,6 +14,9 @@ type Config struct {
 	Dir    string
 	File   string
 	IsTest bool
+
+	Conversor string
+	CoinGecko conversor.CoinGeckoConfig
 }
 
 // Backend is the main struct that holds the providers dependencies.
@@ -25,18 +30,33 @@ type Backend struct {
 }
 
 // NewBackend creates a new backend with the given configuration.
-func NewBackend(cfg Config) *Backend {
+func NewBackend(cfg Config) (*Backend, error) {
 	b := Backend{
 		cfg: cfg,
 	}
 
-	if cfg.IsTest {
-		b.prepareBackendsForTest()
+	b.prepareBackendsForTest()
 
-		return &b
+	if cfg.IsTest {
+		return &b, nil
 	}
 
-	return &b
+	// Conversor
+	if cfg.Conversor == "coingecko" {
+		if cfg.CoinGecko.Key != "" {
+			return nil, errors.New("coingecko api key is required")
+		}
+
+		cfg.CoinGecko.URL = conversor.DemoBaseURL
+
+		if cfg.CoinGecko.KeyType == conversor.ProKeyType {
+			cfg.CoinGecko.URL = conversor.ProBaseURL
+		}
+
+		b.conversor = conversor.NewCoinGecko(cfg.CoinGecko)
+	}
+
+	return &b, nil
 }
 
 // prepareBackendsForTest prepares the backend for testing purposes.
