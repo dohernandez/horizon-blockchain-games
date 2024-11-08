@@ -11,7 +11,7 @@ import (
 // LoadSampleData loads sample data from a CSV file.
 func LoadSampleData(limit, offset int) ([][]string, error) {
 	// Open the CSV file.
-	file, err := os.Open("../resources/sample_data.csv")
+	file, err := os.Open("../resources/sample-bucket/sample_data.csv")
 	if err != nil {
 		return nil, fmt.Errorf("opening file: %w", err)
 	}

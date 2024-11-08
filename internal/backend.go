@@ -34,6 +34,10 @@ type Config struct {
 	// StorageType is the type of storage to use.
 	StorageType string
 
+	// GCPBucketEndpoint is the endpoint of the Google Cloud Storage bucket.
+	// It is mainly used for testing purposes.
+	GCPBucketEndpoint string
+
 	// WarehouseType is the type of warehouse to use.
 	WarehouseType string
 
@@ -98,7 +102,21 @@ func NewBackend(cfg Config) *Backend {
 	if cfg.StorageType == "bucket" {
 		logger.Debug(ctx, "replacing extractProvider with google bucket storage")
 
-		b.extractProvider = storage.NewGoogleBucket(cfg.Dir, cfg.File)
+		gbCfg := storage.GoogleBucketConfig{
+			Bucket: cfg.Dir,
+			File:   cfg.File,
+		}
+
+		opts := []storage.Option{storage.WithLogger(logger)}
+
+		if cfg.GCPBucketEndpoint != "" {
+			opts = append(opts, storage.WithEndpoint(cfg.GCPBucketEndpoint))
+		}
+
+		stgcp := storage.NewGoogleBucket(gbCfg, opts...)
+
+		b.extractProvider = stgcp
+		b.stepProvider = stgcp
 	}
 
 	// Conversor.

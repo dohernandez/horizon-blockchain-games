@@ -1,0 +1,10 @@
+version: '3.9'
+services:
+  storage:
+    image: fsouza/fake-gcs-server
+    ports:
+      - '4443:4443'
+    volumes:
+      - ./resources/sample-bucket:/data/sample-bucket
+
+    entrypoint: ["fake-gcs-server", "-backend=filesystem", "-data=/data", "-scheme=http", "-port=4443", "-public-host=storage.gcs.127.0.0.1.nip.io:4443"]

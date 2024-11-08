@@ -206,6 +206,12 @@ var sequenceFlags = []cli.Flag{
 			return nil
 		},
 	},
+	&cli.StringFlag{
+		Name:     "gcp-bucket-endpoint",
+		Required: false,
+		Hidden:   true,
+		EnvVars:  []string{"GCP_BUCKET_ENDPOINT"},
+	},
 	&cli.BoolFlag{
 		Name:        "verbose",
 		Required:    false,
@@ -217,7 +223,7 @@ var sequenceFlags = []cli.Flag{
 	&cli.StringFlag{
 		Name:        "warehouse",
 		Required:    false,
-		Usage:       fmt.Sprintf("target type to use to load/store %s", storageTypes),
+		Usage:       fmt.Sprintf("target type to use to load/store %s", warehouseType),
 		DefaultText: warehouse.BigQueryType,
 		Value:       warehouse.BigQueryType,
 		Action: func(_ *cli.Context, s string) error {
@@ -303,7 +309,8 @@ func loadConfig(c *cli.Context) (internal.Config, error) {
 	cfg.ConversorType = c.String("conversor")
 
 	if cfg.ConversorType == conversor.GoinGeckoType {
-		if c.String("coingecko-api-key") == "" {
+		// Check if the coingecko api key is required in the calculator step.
+		if c.Bool("calculator") && c.String("coingecko-api-key") == "" {
 			return cfg, fmt.Errorf("coingecko api key is required")
 		}
 
@@ -316,10 +323,12 @@ func loadConfig(c *cli.Context) (internal.Config, error) {
 	}
 
 	cfg.StorageType = c.String("storage-type")
+	cfg.GCPBucketEndpoint = c.String("gcp-bucket-endpoint")
 
 	cfg.WarehouseType = c.String("warehouse")
 
-	if cfg.WarehouseType == warehouse.BigQueryType {
+	// Config the BigQuery dataset if in the insertion step.
+	if c.Bool("insertion") && cfg.WarehouseType == warehouse.BigQueryType {
 		parts := strings.Split(c.String("bigquery-dataset"), ".")
 
 		cfg.BigQuery = warehouse.BigQueryConfig{
