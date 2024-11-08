@@ -15,7 +15,7 @@ func TestFile_Load(t *testing.T) {
 
 	ctx := context.Background()
 
-	data, err := storage.NewFileSystem("../../resources", "sample_data.csv").Load(ctx)
+	data, err := storage.NewFileSystem("../../resources/sample-bucket/", "sample_data.csv").Load(ctx)
 	require.NoError(t, err)
 
 	require.NotNil(t, data)
