@@ -21,7 +21,7 @@ Before you start contributing, make sure you have the following tools installed:
 * [gofumpt](https://github.com/mvdan/gofumpt/releases) version v0.7.x or greater.
 * [mockery](https://github.com/vektra/mockery/releases) version v2.46.x or greater.
 
-For quickly installing the tools do:
+For quickly installing the tools (`golangci-lint`, `gci`, `gofumpt`, `mockery`) do:
 
 ```bash
 make tools
@@ -39,7 +39,7 @@ For linting the code do:
 make lint        # Make sure your change(s) follow our coding standards.
 ```
 
-For check commit do:
+For checking the commit do:
 
 ```bash
 make check        # Make sure test and lint pass before you commit and push :)
@@ -82,7 +82,7 @@ Usage
 
 ## Dependency management
 
-Avoid introducing external dependencies without a good reason, but if so the project uses [Go modules](https://golang.org/cmd/go/#hdr-Modules__module_versions__and_more) to manage dependencies on external packages. This requires a working Go environment with version 1.12 or greater installed (version of the project 1.17).
+Avoid introducing external dependencies without a good reason, but if so the project uses [Go modules](https://golang.org/cmd/go/#hdr-Modules__module_versions__and_more) to manage dependencies on external packages. This requires a working Go environment with version 1.12 or greater installed (version of the project 1.23.3).
 
 All dependencies are vendored in the `vendor/` directory.
 

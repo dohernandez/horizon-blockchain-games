@@ -2,7 +2,7 @@
 
 * Latest update: 2024-11-08
 
-Sequence pipeline process data from the given data sources to a data warehouse table (BigQuery), transform and load the data into a table using Go and GCP. Its extract, normalize, and calculate daily marketplace volume, daily transactions, and aggregated volume data, and send it to an API endpoint for data visualization.
+Sequence pipeline processes data from the given data sources (GCP bucket) to a data warehouse table (BigQuery), transform and load the data into a table using Go. Its extract, normalize, and calculate daily marketplace volume, daily transactions, and aggregated volume data, and send it to an API endpoint for data visualization.
 
 ## Overview
 
@@ -25,7 +25,7 @@ The pipeline writes data to the following destination:
 
 ### Data Processing
 
-The pipeline performs the following transformations:
+The pipeline performs the following tasks:
 
 - **Extraction**: Read data from the GCS bucket and normalize the data.
 - **Calculator**: Calculate daily marketplace volume, daily transactions, and aggregated volume data.
@@ -65,6 +65,8 @@ CREATE TABLE IF NOT EXISTS `sequence.sample_data` (
 │   ├── makefiles # contains Makefile modules.
 ├── resources # RECOMMENDED service resources. Shell helper scripts, additional files required for development, testing and documentations.
 ```
+
+
 
 
 
