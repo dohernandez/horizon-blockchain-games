@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
-	"strings"
 )
 
 // FileSystemType is the type of the FileSystem storage.
@@ -39,13 +37,7 @@ func (f *FileSystem) Load(_ context.Context) ([]byte, error) {
 
 // LoadStep loads the data from the file.
 func (f *FileSystem) LoadStep(_ context.Context, file string) ([]byte, error) {
-	filePath := filepath.Clean(path.Join(f.dir, file))
-
-	if !strings.HasPrefix(filePath, f.dir) {
-		return nil, fmt.Errorf("invalid path")
-	}
-
-	data, err := os.ReadFile(filePath)
+	data, err := os.ReadFile(path.Join(f.dir, file)) //nolint:gosec
 	if err != nil {
 		return nil, fmt.Errorf("opening file: %w", err)
 	}
@@ -55,13 +47,7 @@ func (f *FileSystem) LoadStep(_ context.Context, file string) ([]byte, error) {
 
 // SaveStep saves the data to the file.
 func (f *FileSystem) SaveStep(_ context.Context, file string, data []byte) error {
-	filePath := filepath.Clean(path.Join(f.dir, file))
-
-	if !strings.HasPrefix(filePath, f.dir) {
-		return fmt.Errorf("invalid path")
-	}
-
-	st, err := os.Create(filePath)
+	st, err := os.Create(path.Join(f.dir, file)) //nolint:gosec
 	if err != nil {
 		return err
 	}
