@@ -215,20 +215,18 @@ func (p *Pipeline) runCalculation(ctx context.Context, g *errgroup.Group, transa
 	}
 
 	var (
-		fs       = make(chan entities.Flatten, chanCap)
-		fsClosed bool
+		fs = make(chan entities.Flatten, chanCap)
 
 		fsSm sync.Mutex
+		cgo  = p.cfg.Workers
 	)
 
 	for range p.cfg.Workers {
 		g.Go(func() error {
 			defer func() {
 				fsSm.Lock()
-				if !fsClosed {
+				if cgo--; cgo == 0 {
 					close(fs)
-
-					fsClosed = true
 				}
 				fsSm.Unlock()
 			}()

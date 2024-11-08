@@ -20,9 +20,18 @@ type Conversor interface {
 // It receives a channel with the transactions and sends the flatten entities to the output channel.
 func Calculate(ctx context.Context, conversor Conversor, input <-chan entities.Transaction, output chan<- entities.Flatten) error {
 	for {
-		transaction, ok := <-input
-		if !ok {
-			break
+		var (
+			transaction entities.Transaction
+			ok          bool
+		)
+
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case transaction, ok = <-input:
+			if !ok {
+				return nil
+			}
 		}
 
 		date := transaction.TS.Format("2006-01-02")
@@ -46,6 +55,4 @@ func Calculate(ctx context.Context, conversor Conversor, input <-chan entities.T
 			TotalVolume: valueUSD,
 		}
 	}
-
-	return nil
 }
