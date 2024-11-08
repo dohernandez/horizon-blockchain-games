@@ -93,6 +93,7 @@ var sequenceFlags = []cli.Flag{
 
 			return nil
 		},
+		EnvVars: []string{"ENVIRONMENT"},
 	},
 	&cli.BoolFlag{
 		Name:        "extractor",
@@ -100,6 +101,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "run only pipeline step extractor",
 		DefaultText: "false",
 		Aliases:     []string{"e"},
+		EnvVars:     []string{"EXTRACTOR_ENABLED"},
 	},
 	&cli.BoolFlag{
 		Name:        "calculator",
@@ -107,6 +109,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "run only pipeline step calculator",
 		DefaultText: "false",
 		Aliases:     []string{"c"},
+		EnvVars:     []string{"CALCULATOR_ENABLED"},
 	},
 	&cli.BoolFlag{
 		Name:        "insertion",
@@ -114,6 +117,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "run only pipeline step insertion",
 		DefaultText: "false",
 		Aliases:     []string{"i"},
+		EnvVars:     []string{"INSERTION_ENABLED"},
 	},
 	&cli.BoolFlag{
 		Name:        "all",
@@ -129,6 +133,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "number of workers to run the pipeline",
 		DefaultText: "1",
 		Aliases:     []string{"w"},
+		EnvVars:     []string{"CALCULATOR_WORKERS"},
 	},
 	&cli.StringFlag{
 		Name:        "dir",
@@ -136,6 +141,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "folder or bucket to read/store the intermediate step data when required",
 		DefaultText: time.Now().Format("2006-01-02"),
 		Value:       time.Now().Format("2006-01-02"),
+		EnvVars:     []string{"DIR", "BUCKET"},
 	},
 	&cli.StringFlag{
 		Name:        "file",
@@ -143,6 +149,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "file to read the data from",
 		DefaultText: "transactions.csv",
 		Value:       "transactions.csv",
+		EnvVars:     []string{"FILE", "DATA_FILE"},
 	},
 	&cli.BoolFlag{
 		Name:        "test",
@@ -177,6 +184,7 @@ var sequenceFlags = []cli.Flag{
 
 			return nil
 		},
+		EnvVars: []string{"CG_API_KEY_TYPE"},
 	},
 	&cli.StringFlag{
 		Name:     "coingecko-api-key",
@@ -204,6 +212,7 @@ var sequenceFlags = []cli.Flag{
 		Usage:       "enable verbose output",
 		DefaultText: "false",
 		Aliases:     []string{"v"},
+		EnvVars:     []string{"VERBOSE"},
 	},
 	&cli.StringFlag{
 		Name:        "warehouse",
@@ -231,6 +240,7 @@ var sequenceFlags = []cli.Flag{
 
 			return nil
 		},
+		EnvVars: []string{"BIGQUERY_DATASET"},
 	},
 }
 
