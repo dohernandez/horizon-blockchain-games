@@ -6,7 +6,7 @@ FROM golang:1.23.3-bookworm AS builder
 
 #ARG GH_ACCESS_TOKEN
 
-WORKDIR /go/src/github.com/dohernandez/sequence
+WORKDIR /go/src/github.com/dohernandez/horizon-blockchain-games
 
 # This is to cache the Go modules in their own Docker layer by
 # using `go mod download`, so that next steps in the Docker build process
@@ -28,6 +28,6 @@ RUN groupadd -r sequence && useradd --no-log-init -r -g sequence sequence
 USER sequence
 
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder --chown=sequence:sequence /go/src/github.com/dohernandez/sequence/bin/sequencecli /bin/sequence
+COPY --from=builder --chown=sequence:sequence /go/src/github.com/dohernandez/horizon-blockchain-games/bin/sequence /bin/sequence
 
 ENTRYPOINT ["sequence"]
