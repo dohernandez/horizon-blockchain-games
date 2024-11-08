@@ -1,0 +1,70 @@
+# See https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+run:
+  go: 1.23.2
+  tests: true
+
+linters-settings:
+  errcheck:
+    check-type-assertions: true
+    check-blank: true
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/dohernandez/horizon-blockchain-games)
+  gocyclo:
+    min-complexity: 20
+  cyclop:
+    max-complexity: 20
+  dupl:
+    # tokens count to trigger issue, 150 by default
+    threshold: 200
+  misspell:
+    locale: US
+  unused:
+    check-exported: false
+  unparam:
+    check-exported: true
+  funlen:
+    lines: 100
+    statements: 60
+
+linters:
+  enable-all: true
+  disable:
+    - contextcheck
+    - lll
+    - gochecknoglobals
+    - gomnd
+    - wrapcheck
+    - paralleltest
+    - forbidigo
+    - forcetypeassert
+    - varnamelen
+    - tagliatelle
+    - errname
+    - ireturn
+    - testpackage
+    - exhaustruct
+    - rowserrcheck # disabled because of generics. You can track the evolution of the generics support by following the https://github.com/golangci/golangci-lint/issues/2649.
+    - sqlclosecheck # disabled because of generics. You can track the evolution of the generics support by following the https://github.com/golangci/golangci-lint/issues/2649.
+    - wastedassign # disabled because of generics. You can track the evolution of the generics support by following the https://github.com/golangci/golangci-lint/issues/2649.
+    - tagalign
+    - depguard
+    - perfsprint
+    - mnd
+    - err113
+    - exportloopref # deprecated https://golangci-lint.run/product/roadmap/#linter-deprecation-cycle
+    - execinquery # deprecated https://golangci-lint.run/product/roadmap/#linter-deprecation-cycle
+
+issues:
+  exclude-use-default: false
+  exclude-rules:
+    - linters:
+        - gomnd
+        - goconst
+        - goerr113
+        - noctx
+        - funlen
+        - dupl
+      path: "_test.go"
