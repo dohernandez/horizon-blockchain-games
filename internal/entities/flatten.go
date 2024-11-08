@@ -7,10 +7,10 @@ import (
 
 // Flatten represents a flattened transaction entity.
 type Flatten struct {
-	Date        string
-	ProjectID   string
-	NumTxs      int
-	TotalVolume float64
+	Date        string  `bigquery:"date"`
+	ProjectID   string  `bigquery:"project_id"`
+	NumTxs      int     `bigquery:"num_transactions"`
+	TotalVolume float64 `bigquery:"total_volume_usd"`
 }
 
 // Encode encodes the flatten entity into a slice of strings.

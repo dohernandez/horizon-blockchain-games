@@ -2,7 +2,7 @@ package internal
 
 import (
 	"context"
-	"errors"
+
 	"github.com/bool64/ctxd"
 	"github.com/bool64/zapctxd"
 	"go.uber.org/zap/zapcore"
@@ -37,6 +37,8 @@ type Config struct {
 	// WarehouseType is the type of warehouse to use.
 	WarehouseType string
 
+	BigQuery warehouse.BigQueryConfig
+
 	// Logger is to enable logger.
 	Logger bool
 }
@@ -52,7 +54,7 @@ type Backend struct {
 }
 
 // NewBackend creates a new backend with the given configuration.
-func NewBackend(cfg Config) (*Backend, error) {
+func NewBackend(cfg Config) *Backend {
 	ctx := context.Background()
 
 	b := Backend{
@@ -89,7 +91,7 @@ func NewBackend(cfg Config) (*Backend, error) {
 	b.loadProvider = &warehouse.Print{}
 
 	if cfg.IsTest {
-		return &b, nil
+		return &b
 	}
 
 	// Storage
@@ -100,12 +102,8 @@ func NewBackend(cfg Config) (*Backend, error) {
 	}
 
 	// Conversor.
-	if cfg.ConversorType == "coingecko" {
+	if cfg.ConversorType == conversor.GoinGeckoType {
 		logger.Debug(ctx, "replacing conversor with CoinGecko")
-
-		if cfg.CoinGecko.Key == "" {
-			return nil, errors.New("coingecko api key is required")
-		}
 
 		cfg.CoinGecko.URL = conversor.DemoBaseURL
 
@@ -118,7 +116,14 @@ func NewBackend(cfg Config) (*Backend, error) {
 		b.conversor = conversor.NewCoinGecko(cfg.CoinGecko, conversor.WithLogger(logger))
 	}
 
-	return &b, nil
+	// Warehouse.
+	if cfg.WarehouseType == warehouse.BigQueryType {
+		logger.Debug(ctx, "replacing warehouse with BigQuery")
+
+		b.loadProvider = warehouse.NewBigQuery(cfg.BigQuery)
+	}
+
+	return &b
 }
 
 // ExtractProvider returns the extract provider.
