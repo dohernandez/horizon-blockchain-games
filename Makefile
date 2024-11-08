@@ -12,6 +12,7 @@ GO ?= go
 -include pkg/makefiles/mockery.mk
 -include pkg/makefiles/build.mk
 -include pkg/makefiles/docker.mk
+-include pkg/makefiles/release-assets.mk
 
 .PHONY: tools test generate check
 
